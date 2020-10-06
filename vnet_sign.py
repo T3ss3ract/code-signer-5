@@ -9,9 +9,6 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from verifier_dicts import vd
 import pymongo
 
-dbc = pymongo.MongoClient("mongodb://10.0.0.21:27017/")
-varcom = dbc["varcom"]
-col = varcom["varcom"]
 
 
 # generate public and private keys
