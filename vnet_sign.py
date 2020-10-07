@@ -7,8 +7,20 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
 from cryptography.hazmat.primitives.asymmetric import rsa
 from verifier_dicts import vd
+import random
 import pymongo
+import yaml
 
+# set the config in config/config.yaml
+# needs fields db, table, address
+with open(r'config/config.yaml') as file:
+    doc = yaml.load(file, Loader=yaml.FullLoader)
+    db = doc["db"]
+    tab = doc["table"]
+    address = doc["address"]
+    dbc = pymongo.MongoClient(address)
+    varcom = dbc[db]
+    col = varcom[tab]
 
 
 # generate public and private keys
@@ -34,8 +46,8 @@ def gen_keys():
     with open('keys/public.pem', 'wb') as f:
         f.write(
             private_key.public_key().public_bytes(
-                encoding = serialization.Encoding.PEM,
-                format = serialization.PublicFormat.SubjectPublicKeyInfo,
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo,
             )
         )
 
@@ -46,16 +58,16 @@ def sign(file, privkey=None):
         with open(f'keys/private.key', 'rb') as key_file:
             private_key = serialization.load_pem_private_key(
                 key_file.read(),
-                password = None,
-                backend = default_backend(),
+                password=None,
+                backend=default_backend(),
             )
 
     else:
         with open(f'{privkey}', 'rb') as key_file:
             private_key = serialization.load_pem_private_key(
                 key_file.read(),
-                password = None,
-                backend = default_backend(),
+                password=None,
+                backend=default_backend(),
             )
 
     # Load the contents of the file to be signed.
@@ -110,6 +122,7 @@ def verify(file2, key=None):
         return -1
     return 0
 
+
 # class for the verifier. includes all info needed to sign and
 # verify the files.
 class VNETverify:
@@ -135,6 +148,7 @@ class VNETverify:
         self.goodfiles = []  # files that pass verification
         self.sigreel = []  # list of signatures to be compared against self.files
         self.fdict = {}    # dictionary for transaction
+        self.dict_id = ""
 
     # sign the files here
     # append to the sigreel
@@ -171,12 +185,15 @@ class VNETverify:
     def generate_sigreel(self):
         dict2 = {}
         dict2 = vd.verify_dict
+        self.dict_id = random.randint(1000000, 9999999)
+        dict2["id"] = self.dict_id
         dict2["files"] = self.files
         dict2["signatures"] = self.sigreel
         with open(f'keys/public.pem', 'rb') as f:
             public_key = f.read()
             dict2["pubkey"] = f"{public_key}"
         self.fdict = dict2
+        print(self.dict_id)
 
     # insert into mongo
     def insert_transaction_mongoid(self):
