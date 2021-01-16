@@ -51,6 +51,36 @@ def gen_keys():
             )
         )
 
+def generate_special_fmt_key(pub_exp, key_s, privkey_fname, pubkey_fname):
+    """
+
+    :param pub_exp: public exponent of key gen
+    :param key_s:   key size
+    :return:
+    """
+    private_key = rsa.generate_private_key(
+        public_exponent = pub_exp,
+        key_size = key_s,
+        backend = default_backend(),
+    )
+    with open(f'keys/{privkey_fname}', 'wb') as f:
+        f.write(
+            private_key.private_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PrivateFormat.TraditionalOpenSSL,
+                encryption_algorithm=serialization.NoEncryption(),
+            )
+        )
+    with open(f'keys/{pubkey_fname}', 'wb') as f:
+        f.write(
+            private_key.public_key().public_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo,
+            )
+        )
+
+
+
 
 # sign a file with your private key
 def sign(file, privkey=None):
