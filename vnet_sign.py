@@ -10,6 +10,7 @@ from verifier_dicts import vd
 import random
 import pymongo
 import yaml
+import os
 
 # set the config in config/config.yaml
 # needs fields db, table, address
@@ -230,6 +231,18 @@ class VNETverify:
         col.insert_one(self.fdict)
         return
 
+    def sign_all_files_in_directory(self, directory):
+        """
+
+        :param directory: a directory to sign all files in
+        :return:
+        """
+        if not os.isfile(directory):
+            print("error: directory does not exist")
+        else:
+            print("directory found")
+        return
+
 
 
 if __name__ == "__main__":
@@ -243,9 +256,11 @@ if __name__ == "__main__":
         # print("signed and verified!")
     s = VNETverify(files=["loremipsum.py", "verifier.py", "signer.py", "README.md"])
     s.sign_files()
+    print(s.files)
     if s.verify_files() == True:
         print("done, no errors")
     else:
         print("errors during verification")
     s.generate_sigreel()
     s.insert_transaction_mongoid()
+

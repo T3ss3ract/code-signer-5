@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="varcom@10.0.0.21" uuid="06bdd1f3-c7fd-43c1-aaa4-3bdd0b54d1dd">
+      <driver-ref>mongo</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb://10.0.0.21:27017/varcom</jdbc-url>
+    </data-source>
+  </component>
+</project>
