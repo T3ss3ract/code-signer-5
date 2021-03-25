@@ -8,9 +8,11 @@ from cryptography.hazmat.primitives.serialization import load_pem_public_key
 from cryptography.hazmat.primitives.asymmetric import rsa
 from verifier_dicts import vd
 import random
+
 import pymongo
 import yaml
 import os
+import glob
 
 # set the config in config/config.yaml
 # needs fields db, table, address
@@ -237,12 +239,13 @@ class VNETverify:
         :param directory: a directory to sign all files in
         :return:
         """
-        if not os.isfile(directory):
-            print("error: directory does not exist")
-        else:
-            print("directory found")
-        return
+        for file in os.listdir(directory):
+            print(file)
 
+
+class SignedFileNetworkManager:
+    def __init__(self):
+        return
 
 
 if __name__ == "__main__":
@@ -263,4 +266,5 @@ if __name__ == "__main__":
         print("errors during verification")
     s.generate_sigreel()
     s.insert_transaction_mongoid()
+    s.sign_all_files_in_directory("signatures/")
 
